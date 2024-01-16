@@ -16,8 +16,12 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build the hello-docker Docker image
-        run: |
-          docker build . --tag ghcr.io/surreymagpie/hello-docker-gcr-demo:latest
-          docker run ghcr.io/surreymagpie/hello-docker-gcr-demo:latest
-          docker push ghcr.io/surreymagpie/hello-docker-gcr-demo:latest
+      - name: Buildah Build
+        uses: redhat-actions/buildah-build@v2.12
+        with:
+          # The name (reference) of the image to build
+          image: surreymagpie/publish-to-gcr
+          # tags: # optional, default is latest
+          # The labels of the image to build. Seperate by newline. For example, "io.containers.capabilities=sys_admin,mknod".
+          labels: # optional
+          dockerfiles: . 
