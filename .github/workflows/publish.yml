@@ -9,12 +9,15 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Login to GitHub Container Registry
+      #   uses: docker/login-action@v1
+      #   with:
+      #     registry: ghcr.io
+      #     username: ${{ github.actor }}
+      #     password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Add branch name to environment
+        run: echo "BRANCH=${GITHUB_REF##*/}" >> $GITHUB_ENV
 
       - name: Buildah Build
         id: buildah-build
@@ -22,8 +25,8 @@ jobs:
         with:
           # The name (reference) of the image to build
           dockerfiles: . 
-          image: surreymagpie/publish-to-gcr
-          tags: latest ${{ github.sha }} ${{ env.GITHUB_REF }} # optional, default is latest
+          image: publish-to-gcr
+          tags: latest ${{ github.sha }} ${{ env.BRANCH }}
           # The labels of the image to build. Seperate by newline. For example, "io.containers.capabilities=sys_admin,mknod".
           # labels: # optional
 
