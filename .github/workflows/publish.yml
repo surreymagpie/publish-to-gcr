@@ -9,28 +9,29 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # - name: Login to GitHub Container Registry
-      #   uses: docker/login-action@v1
-      #   with:
-      #     registry: ghcr.io
-      #     username: ${{ github.actor }}
-      #     password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Buildah Build
+        id: buildah-build
         uses: redhat-actions/buildah-build@v2.12
         with:
           # The name (reference) of the image to build
           dockerfiles: . 
-          image: ${{ github.repository }}
-          tags: latest ${{ github.sha }} # optional, default is latest
+          image: surreymagpie/publish-to-gcr
+          tags: latest ${{ github.sha }} ${{ env.GITHUB_REF }} # optional, default is latest
           # The labels of the image to build. Seperate by newline. For example, "io.containers.capabilities=sys_admin,mknod".
           # labels: # optional
 
-      - name: Push To GHCR
+      - name: Push To quay.io
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: ${{ github.repository }}
-          tags: latest ${{ github.sha }}
-          registry: ghcr.io
-          username: ${{ github.actor }}
+          image: ${{ steps.buildah-build.outputs.image }}
+          tags: ${{ steps.buildah-build.outputs.tags }}
+          registry: ghcr.io/${{ github.actor}}
+          username: ${{ github.actor}}
           password: ${{ secrets.GITHUB_TOKEN }}
