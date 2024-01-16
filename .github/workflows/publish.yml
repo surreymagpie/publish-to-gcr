@@ -21,7 +21,7 @@ jobs:
         with:
           # The name (reference) of the image to build
           dockerfiles: . 
-          image: surreymagpie/publish-to-gcr
+          image: ${{ github.actor }}/${{ github.repository }}
           tags: latest ${{ github.sha }} # optional, default is latest
           # The labels of the image to build. Seperate by newline. For example, "io.containers.capabilities=sys_admin,mknod".
           # labels: # optional
@@ -29,8 +29,8 @@ jobs:
       - name: Push To GHCR
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: ${{ steps.buildah-build.outputs.image }}
-          tags: ${{ steps.buildah-build.outputs.tags }}
+          image: ${{ github.actor }}/${{ github.repository }}
+          tags: latest ${{ github.sha }} ${{ github.workflow}}
           registry: ghcr.io/${{ github.actor }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
