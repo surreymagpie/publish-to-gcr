@@ -21,7 +21,7 @@ jobs:
         with:
           # The name (reference) of the image to build
           dockerfiles: . 
-          image: ${{ github.actor }}/${{ github.repository }}
+          image: ${{ github.repository }}
           tags: latest ${{ github.sha }} # optional, default is latest
           # The labels of the image to build. Seperate by newline. For example, "io.containers.capabilities=sys_admin,mknod".
           # labels: # optional
@@ -29,8 +29,8 @@ jobs:
       - name: Push To GHCR
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: ${{ github.actor }}/${{ github.repository }}
-          tags: latest ${{ github.sha }} ${{ github.workflow}}
-          registry: ghcr.io/${{ github.actor }}
+          image: ${{ github.repository }}
+          tags: latest ${{ github.sha }}
+          registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
